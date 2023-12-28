@@ -1,0 +1,82 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+int A[100][100];
+int B[100][100];
+
+typedef VexType char;
+typedef EdgeType int;
+
+#define MaxVnum 100
+
+typedef struct {
+	VexType Vex[MaxVnum];
+	EdgeType Edge[MaxVnum][MaxVnum];
+}AMGraph; 
+
+int locatevex(Graph G, VexType x) {
+	for(int i=0; i<3; i++) {
+		if(x == G.Vex[i])
+			return i;
+	}
+	return -1;
+}
+
+//创建邻接图 
+void CreateAMGraph(AMGraph &G) {
+	int i, j;
+	VexType v, u;
+	cout << "请输入顶点信息:"<<endl;
+	
+	for(int i=0; i<3; i++) 
+		cin >> G.Vex[i];
+	
+	for(int i=0; i<3; i++) 
+		for(int j=0; j<3;j++) 
+			G.Edge[i][j] = 0;
+		
+	cout << "请输入每条边依附的两个顶点:"<<endl;
+	int n = 3;
+	while(n--) {
+		cin >> u >> v;
+		i = locatevex(G, u); //查找是否有这个点并返回它的下标
+		j = locatevex(G, v);
+		
+		if(i != -1 && j != -1) 
+			G.Edge[i][j] = G.Edge[j][i] = 1; //如果查到这个下标
+		else {
+			cout << "输入错误，请重新输入！"<<endl;
+			n++;
+		} 
+	} 
+}
+
+int main() {
+
+  
+	for(int i=0; i < 3; i++) {
+		for(int j=0; j < 3; j++) 
+			cin >> A[i][j];
+	}
+	CreateAMGraph(A);
+	for(int i=0; i < 3; i++) {
+		for(int j=0; j < 3; j++) {
+				B[i][j] = 0;
+			for(int k=0; k < 3; k++) {
+				B[i][j] |= A[i][k] & A[k][j]; //每一行乘以每一列 最后相加给B 
+        //这里如果不用位运算， 就需要下面的if判断，此时式子变为: B[i][j] += A[i][j] * A[i][j];
+			}
+//		if(B[i][j] > 1) 
+//			B [i][j] = 1;  
+		}
+		
+	}
+	
+	for(int i=0; i<3; i++) {
+		for(int j=0; j < 3;j++) {
+			cout << B[i][j] << " ";
+		}
+		cout << endl;
+	}
+	
+}
